@@ -4,3 +4,85 @@ author: "Ashley Anderson & Hexiang Zhang"
 date: "11/14/2019"
 output: html_document
 ---
+
+Repo Owner Username: ashleyna
+Partner Username: hexzha
+Repo Name: ds202_lab5
+
+##Processing the Data
+
+####1. Reading in the data:
+```{r}
+df <- read.table('diabetes.txt',header=TRUE)
+head(df)
+```
+
+####2. Replacing missing values:
+```{r, results="hide"}
+df[df == ""] <- NA
+droplevels(df)
+```
+
+####3. Dropping variables id, bp.2s, and bp.2d:
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+diabetes_reduced <- df %>% select(-one_of(c('id', 'bp.2s', 'bp.2d')))
+```
+
+####4. Dropping all rows with NAs:
+```{r}
+diabetes_clean <- diabetes_reduced %>% drop_na()
+nrow(diabetes_clean)
+ncol(diabetes_clean)
+```
+
+####5. Checking there are no NAs in the data set:
+```{r}
+index.na <- apply(is.na(diabetes_clean), 1, any)
+sum(index.na)
+```
+Since the sum is 0, that means there are no TRUE values. In other words, there are no NAs. 
+
+
+##Exploring and Transforming the Data
+
+####6. Glyhb distribution:
+```{r}
+ggplot(diabetes_clean, aes(x=glyhb)) + geom_histogram() + labs(title="Glycosolated Hemoglobin Distribution", x="Glycosolated Hemoglobin", y="Count")
+
+diabetes_clean$glyhb_star <- log(diabetes_clean$glyhb)
+```
+
+We can perform a log transformation on glyhb, which will result in a less skewed histogram. While a log transformation will create a distribution closer to a normal distribution, it will definitely make our further analysis harder to interpret and explain. It is easier to explain how any value greater the 7.0 is considered diabetic, but log(7) = 1.946 is a bit harder to comparetively work with. In other words, most perople are generally more familar with the typical glycosolated hemoglobin scale than the log transformed one. On the other hand, this log transformation is a good option though because there are no glycosolated hemoglobin values near 0 and it ultimately fixes the right skewness in our histogram.   
+
+####7. Glyhb distribution with log transformation: 
+```{r}
+ggplot(diabetes_clean, aes(x=glyhb_star)) + geom_histogram() + labs(title="Glycosolated Hemoglobin Distribution", x="log(Glycosolated Hemoglobin)", y="Count")
+```
+
+####8. Summary Statistics:
+```{r}
+diabetes_clean %>% 
+  group_by(frame) %>% 
+  summarise(mean.glyhb = mean(glyhb_star))
+
+diabetes_clean %>% 
+  mutate(diabetic = ifelse(glyhb_star>log(7),T,F)) %>% 
+  group_by(diabetic) %>%
+  summarise(mean.weight = mean(weight))
+
+diabetes_clean %>% 
+  mutate(diabetic = ifelse(glyhb_star>log(7),T,F)) %>% 
+  group_by(diabetic) %>%
+  summarise(mean.weight = mean(age))
+```
+
+##Visualizations
+
+####10. 
+```{r}
+diabetes_clean %>% 
+  group_by(frame,location) %>% 
+  summarise (mean.glyhb_star= mean(glyhb_star)) %>%
+  ggplot(aes(x=location, y=mean.glyhb_star, color=frame)) + geom_point()
+```
