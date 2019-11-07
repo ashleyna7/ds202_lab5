@@ -48,6 +48,7 @@ Since the sum is 0, that means there are no TRUE (=1) values. In other words, th
 
 ####6. Glyhb distribution:
 ```{r}
+library(ggplot2)
 ggplot(diabetes_clean, aes(x=glyhb)) + geom_histogram() + labs(title="Glycosolated Hemoglobin Distribution", x="Glycosolated Hemoglobin", y="Count")
 
 diabetes_clean$glyhb_star <- log(diabetes_clean$glyhb)
@@ -87,22 +88,68 @@ diabetes_clean %>%
   ggplot(aes(x=location, y=mean.glyhb_star, fill=frame)) + geom_bar(stat="identity", position = "dodge")
 ```
 
+***
 ####11. Exploration with variable glyhb_star
 ```{r}
-ggplot(diabetes_clean, aes(x=glyhb_star, y=ratio)) + geom_jitter() + geom_smooth(method = "lm", se = FALSE) + labs(title="Glycosolated Hemoglobin by Ratio", x="Glycosolated Hemoglobin", y="Ratio (Cholesterol/HDL)")
+ggplot(diabetes_clean, aes(x=glyhb_star, y=ratio, color=gender)) + geom_jitter() + geom_smooth(method = "lm", se = FALSE) + labs(title="Glycosolated Hemoglobin by Ratio", x="Glycosolated Hemoglobin", y="Ratio (Cholesterol/HDL)")
 
-ggplot(diabetes_clean, aes(x=glyhb_star, y=age)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + labs(title="Glycosolated Hemoglobin by Ratio", x="Glycosolated Hemoglobin", y="Ratio (Cholesterol/HDL)")
-  
+ggplot(diabetes_clean, aes(x=glyhb_star, y=age, color=gender)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + labs(title="Glycosolated Hemoglobin by Age", x="Glycosolated Hemoglobin", y="Age")
+
+ggplot(diabetes_clean, aes(x=glyhb_star, y=bp.1s, color=gender)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + labs(title="Glycosolated Hemoglobin by First Systolic Blood Pressure", x="Glycosolated Hemoglobin", y="Systolic Blood Pressure")  
+
+ggplot(diabetes_clean, aes(x=glyhb_star, y=weight, color=gender)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + labs(title="Glycosolated Hemoglobin by Weight", x="Glycosolated Hemoglobin", y="Weight (lbs)")
+
+ggplot(diabetes_clean, aes(x=glyhb_star, y=hip, color=gender)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + labs(title="Glycosolated Hemoglobin by Hip Size", x="Glycosolated Hemoglobin", y="Hip Size (inches)")
 
 ```
-ratio, bp.1s, age, gender, hip and weight.
 
+***
+####12. Distinct patterns for hip and waist across different frames
+```{r}
+ggplot(diabetes_clean,aes(x=waist,y=hip)) + geom_jitter() + facet_grid(~frame)
 
+ggplot(diabetes_clean,aes(x=waist,y=hip, color=frame)) + geom_jitter()
+```
 
+##Messy Data
 
+*** 
+####13. Spread and Gather
 
+***
+####14. 
 
+##Regression Models
 
+***
+####15. Linear Regression Model
+```{r}
+fit <- lm(glyhb_star ~stab.glu + age + waist + ratio+ factor(frame),data=diabetes_clean)
+summary(fit)
+```
 
+Based on the F-statistic, the p-value is <2.2e-16, which indicates the model is overall statistically significant. On the other hand, the adjusted $R^2$ is 0.557, meaning only 55.7% of the variation in 'glyhb_star' can be explained by the model. Based on our exploratory analysis, the variables all show a linear relationship with 'glyhb_star', indicating a multiple linear regression model is likely a good choice to start with.  
 
+***
+####16. Interpretations
 
+*stab.glu: 
+
+***
+####17. Fitted Values
+```{r}
+fit$fitted.values
+```
+
+These estimated fitted values are estimated of our dependent variable 'glyhb_star' or glycosolated hemoglobin. 
+
+***
+####18. Inference vs. Prediction
+
+***
+####19. Linear Regression vs. K-NN Regression Models
+
+##Reflection
+
+***
+####20. 
