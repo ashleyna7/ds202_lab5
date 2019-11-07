@@ -41,7 +41,7 @@ ncol(diabetes_clean)
 index.na <- apply(is.na(diabetes_clean), 1, any)
 sum(index.na)
 ```
-Since the sum is 0, that means there are no TRUE values. In other words, there are no NAs. 
+Since the sum is 0, that means there are no TRUE (=1) values. In other words, there are no NAs. 
 
 
 ##Exploring and Transforming the Data
@@ -84,5 +84,25 @@ diabetes_clean %>%
 diabetes_clean %>% 
   group_by(frame,location) %>% 
   summarise (mean.glyhb_star= mean(glyhb_star)) %>%
-  ggplot(aes(x=location, y=mean.glyhb_star, color=frame)) + geom_point()
+  ggplot(aes(x=location, y=mean.glyhb_star, fill=frame)) + geom_bar(stat="identity", position = "dodge")
 ```
+
+####11. Exploration with variable glyhb_star
+```{r}
+ggplot(diabetes_clean, aes(x=glyhb_star, y=ratio)) + geom_jitter() + geom_smooth(method = "lm", se = FALSE) + labs(title="Glycosolated Hemoglobin by Ratio", x="Glycosolated Hemoglobin", y="Ratio (Cholesterol/HDL)")
+
+ggplot(diabetes_clean, aes(x=glyhb_star, y=age)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + labs(title="Glycosolated Hemoglobin by Ratio", x="Glycosolated Hemoglobin", y="Ratio (Cholesterol/HDL)")
+  
+
+```
+ratio, bp.1s, age, gender, hip and weight.
+
+
+
+
+
+
+
+
+
+
