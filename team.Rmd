@@ -103,7 +103,17 @@ ggplot(diabetes_clean, aes(x=glyhb_star, y=hip, color=gender)) + geom_point() + 
 
 ```
 
-***
+Glycosolated Hemoglobin seems to have a fairly strong corrolation with ratio. There does not seem to be much difference in this relationship in regards to gender.
+
+Glycosolated Hemoglobin does not seem to have a strong corrolation with age. There does not seem to be much difference in this relationship in regards to gender. Both have a similar random relationship.
+
+Glycosolated Hemoglobin does not seem to have a strong corrolation with First Systolic Blood Pressure. There does not seem to be much diffrence in this relationship in regards to gender. 
+
+Glycosolated Hemoglobin does not seem to have a strong corrolation with weight. There does not seem to be much diffrence in this relationship in regards to gender.
+
+Glycosolated Hemoglobin does not seem to have a strong corrolation with hip size either.
+
+
 ####12. Distinct patterns for hip and waist across different frames
 ```{r}
 ggplot(diabetes_clean,aes(x=waist,y=hip)) + geom_jitter() + facet_grid(~frame)
@@ -113,11 +123,19 @@ ggplot(diabetes_clean,aes(x=waist,y=hip, color=frame)) + geom_jitter()
 
 ##Messy Data
 
-*** 
 ####13. Spread and Gather
 
-***
+Spread and Gather are functions that are used to transform the data into a format desired. 
+
+Spread is a function that spreads out the dataset. A dataset can have two columns where one column is a key and the second column is the value of the key. In each row, the value is the attribute of the key. An object can have different keys with values all in the same two columns. This can make manipulating the data hard. Spread is a function that takes in the key and value columns and transform the data into a new dataset where each unique key is its own column and the values of the key are what is in the column. Results in fewer rows and more columns. 
+
+Gather is a function that gathers in the dataset. A dataset can have many columns where each column has a name and the data in that column. For each column, the key is the name of the column ,and the value is the attributes in the column. A row of data can have many columns/keys. This can make manipulating the data hard. Gather is a function that takes in a name1 for describing the columns we want to gather together, a name2 for the values in those gathered columns, and the columns we want to colapse and gather together. The data is transformed into a new dataset where the many gathered columns become two. One column is the key column, called name1. In this column, it contains the names of the columns we gathered together. The second column is the value column, called name2. In this column, its holds the data in each of the columns we gathered together. For each row, the key is the original column name and the value is the data in that original column. Results in fewer columns and more rows. 
+
 ####14. 
+
+Gather and spread are exact complements. Gather takes many columns and puts them into two columns of key and value. It reduces the number of columns and increases the number of rows. 
+
+Spread takes two columns and puts them into many columns, each column for every unique key to hold the values of that key. It reduces the number of rows and increases the number of columns.  
 
 ##Regression Models
 
