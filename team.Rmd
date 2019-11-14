@@ -182,15 +182,14 @@ exp(pred)
 ```
 We predict a person who is 35 years old with a stabalized glucose of 90, waist size of 30, ratio of choleterol to HDl of 5.1, and a small frame to have a glycosolated hemoglobin of 4.6472 (or glyhb_star=1.5326).
 
-***
 ####18. Inference vs. Prediction
-In
+Generally, both inferences and predictions describe what we learn about our data throughout the data science process. The are different though in how we use the data. Making an inference involves trying to understand and interpret the results of the data, explorations, and models. We make inferences and interpretations about the observations we make from our explorations. On the other hand, we make predictions from our data to understand what could happen in the future based on what has happened in the past and present time. 
 
-***
 ####19. Linear Regression vs. K-NN Regression Models
-
+For linear regression, it is a good model to choose as it is very simple to create and understand. It also works with any data that appears to have a linear relationship with the chosen dependent variable. This can also be a negative though since it can only work with linear relationships, which is not all data. Additionally, the models is heavily influenced by outliers and errors in the data which ultimately influences the fit of the model, and requires many assumptions to be met in order for the model to be reliable. 
+For K-NN regression, it is a more flexible regression model and is not as heavily restricted on assumptions like linear regression is, making it a more universal model choice for data. On the other hand, K-NN regression is not as simple as linear regression is and is harder to interpret results.
 
 ##Reflection
 
-***
 ####20. 
+I don't think our idea of data science has changed, but we believe our idea has grown. What we have found most surpirising about data science is that it requires a ton of data cleaning, much more than we expected at the start. No realistic data starts perfect and ready to model, there will always be problems to fix to get the data ready for exploration. One of the most challenging things about data science is trying to determine how to visualize the data. There are many options, and trying to determine which option is best is challenging and takes time. We find the most enjoyable thing about data science to be the data exploration. Exploring the variables and learning how to best clean it is always very interesting. It is always a unique experience for each data set and the problem solving does not get old or tiring. 
