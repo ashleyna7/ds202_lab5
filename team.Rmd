@@ -41,7 +41,7 @@ ncol(diabetes_clean)
 index.na <- apply(is.na(diabetes_clean), 1, any)
 sum(index.na)
 ```
-Since the sum is 0, that means there are no TRUE (=1) values. In other words, there are no NAs. 
+Since the sum is 0, that means there are no TRUE (1) values. In other words, there are no NAs in our dataset diabetes_clean. 
 
 
 ##Exploring and Transforming the Data
@@ -50,33 +50,41 @@ Since the sum is 0, that means there are no TRUE (=1) values. In other words, th
 ```{r}
 library(ggplot2)
 ggplot(diabetes_clean, aes(x=glyhb)) + geom_histogram() + labs(title="Glycosolated Hemoglobin Distribution", x="Glycosolated Hemoglobin", y="Count")
-
-diabetes_clean$glyhb_star <- log(diabetes_clean$glyhb)
 ```
 
 We can perform a log transformation on glyhb, which will result in a less skewed histogram. While a log transformation will create a distribution closer to a normal distribution, it will definitely make our further analysis harder to interpret and explain. It is easier to explain how any value greater the 7.0 is considered diabetic, but log(7) = 1.946 is a bit harder to comparetively work with. In other words, most perople are generally more familar with the typical glycosolated hemoglobin scale than the log transformed one. On the other hand, this log transformation is a good option though because there are no glycosolated hemoglobin values near 0 and it ultimately fixes the right skewness in our histogram.   
 
 ####7. Glyhb distribution with log transformation: 
 ```{r}
+diabetes_clean$glyhb_star <- log(diabetes_clean$glyhb)
 ggplot(diabetes_clean, aes(x=glyhb_star)) + geom_histogram() + labs(title="Glycosolated Hemoglobin Distribution", x="log(Glycosolated Hemoglobin)", y="Count")
 ```
+We can now see in the plot above that taking the log transformation of glyhb_star results in a histogram that is closer to a normal distribution. 
 
 ####8. Summary Statistics:
 ```{r}
 diabetes_clean %>% 
   group_by(frame) %>% 
   summarise(mean.glyhb = mean(glyhb_star))
+```
+From the table above, we can see that the larger the frame a person has, on average, the higher their glycosolated hemoglobin. 
 
+```{r}
 diabetes_clean %>% 
   mutate(diabetic = ifelse(glyhb_star>log(7),T,F)) %>% 
   group_by(diabetic) %>%
   summarise(mean.weight = mean(weight))
+```
+From the table above, we can see that if a person is diabetic, on average, the higher their weight is. 
 
+```{r}
 diabetes_clean %>% 
   mutate(diabetic = ifelse(glyhb_star>log(7),T,F)) %>% 
   group_by(diabetic) %>%
   summarise(mean.weight = mean(age))
 ```
+From the table above, we can see above that if a person is diabetic, on average, the older they are.
+
 
 ##Visualizations
 
@@ -87,39 +95,45 @@ diabetes_clean %>%
   summarise (mean.glyhb_star= mean(glyhb_star)) %>%
   ggplot(aes(x=location, y=mean.glyhb_star, fill=frame)) + geom_bar(stat="identity", position = "dodge")
 ```
+The above graph depicts two histograms based on locations, Buckingham and Louisa, by frame size. For both locations, the average glycosolated hemoglobin increases as frame size increases. It increases more for those in Buckingham than for those in Louisa. 
 
-***
 ####11. Exploration with variable glyhb_star
 ```{r}
-ggplot(diabetes_clean, aes(x=glyhb_star, y=ratio, color=gender)) + geom_jitter() + geom_smooth(method = "lm", se = FALSE) + labs(title="Glycosolated Hemoglobin by Ratio", x="Glycosolated Hemoglobin", y="Ratio (Cholesterol/HDL)")
-
-ggplot(diabetes_clean, aes(x=glyhb_star, y=age, color=gender)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + labs(title="Glycosolated Hemoglobin by Age", x="Glycosolated Hemoglobin", y="Age")
-
-ggplot(diabetes_clean, aes(x=glyhb_star, y=bp.1s, color=gender)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + labs(title="Glycosolated Hemoglobin by First Systolic Blood Pressure", x="Glycosolated Hemoglobin", y="Systolic Blood Pressure")  
-
-ggplot(diabetes_clean, aes(x=glyhb_star, y=weight, color=gender)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + labs(title="Glycosolated Hemoglobin by Weight", x="Glycosolated Hemoglobin", y="Weight (lbs)")
-
-ggplot(diabetes_clean, aes(x=glyhb_star, y=hip, color=gender)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + labs(title="Glycosolated Hemoglobin by Hip Size", x="Glycosolated Hemoglobin", y="Hip Size (inches)")
-
+ggplot(diabetes_clean, aes(x=glyhb_star, y=ratio, color=gender)) + geom_jitter() + geom_smooth(method = "lm", se = FALSE) + labs(title="Glycosolated Hemoglobin by Ratio", x="log(Glycosolated Hemoglobin)", y="Ratio (Cholesterol/HDL)")
 ```
+Glycosolated hemoglobin has a moderately strong, positive, linear corrolation with ratio with a couple outliers in the y-direction. There does not seem to be much of a difference in this relationship in regards to gender.
 
-Glycosolated Hemoglobin seems to have a fairly strong corrolation with ratio. There does not seem to be much difference in this relationship in regards to gender.
+```{r}
+ggplot(diabetes_clean, aes(x=glyhb_star, y=age, color=gender)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + labs(title="Glycosolated Hemoglobin by Age", x="log(Glycosolated Hemoglobin)", y="Age")
+```
+Glycosolated hemoglobin does not seem to have a linear corrolation with age. There does not seem to be much difference in this relationship in regards to gender. Both have a similar random relationship.
 
-Glycosolated Hemoglobin does not seem to have a strong corrolation with age. There does not seem to be much difference in this relationship in regards to gender. Both have a similar random relationship.
+```{r}
+ggplot(diabetes_clean, aes(x=glyhb_star, y=bp.1s, color=gender)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + labs(title="Glycosolated Hemoglobin by First Systolic Blood Pressure", x="log(Glycosolated Hemoglobin)", y="Systolic Blood Pressure")  
+```
+Glycosolated hemoglobin has a weak, positive, linear relationship with first systolic blood pressure with lots of female outliers in the y-direction. There does not seem to be much diffrence in the relationship in regards to gender though. 
 
-Glycosolated Hemoglobin does not seem to have a strong corrolation with First Systolic Blood Pressure. There does not seem to be much diffrence in this relationship in regards to gender. 
+```{r}
+ggplot(diabetes_clean, aes(x=glyhb_star, y=weight, color=gender)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + labs(title="Glycosolated Hemoglobin by Weight", x="log(Glycosolated Hemoglobin)", y="Weight (lbs)")
+```
+Glycosolated hemoglobin does not seem to have a linear corrolation with weight. Additionally, there does not seem to be much diffrence in this relationship in regards to gender.
 
-Glycosolated Hemoglobin does not seem to have a strong corrolation with weight. There does not seem to be much diffrence in this relationship in regards to gender.
-
-Glycosolated Hemoglobin does not seem to have a strong corrolation with hip size either.
+```{r}
+ggplot(diabetes_clean, aes(x=glyhb_star, y=hip, color=gender)) + geom_point() + geom_smooth(method = "lm", se = FALSE) + labs(title="Glycosolated Hemoglobin by Hip Size", x="log(Glycosolated Hemoglobin)", y="Hip Size (inches)")
+```
+Glycosolated hemoglobin has a weak, postive, linear relationship with hip size. We can see that the hip size for females is higher than the hip size for males when glycosolated hemoglobin is the same. 
 
 
 ####12. Distinct patterns for hip and waist across different frames
 ```{r}
-ggplot(diabetes_clean,aes(x=waist,y=hip)) + geom_jitter() + facet_grid(~frame)
-
-ggplot(diabetes_clean,aes(x=waist,y=hip, color=frame)) + geom_jitter()
+ggplot(diabetes_clean,aes(x=waist,y=hip)) + geom_jitter() + facet_grid(~frame) + geom_smooth(method = "lm", se = FALSE) + labs(title="Waist and Hip Size by Frame", x="Waist Size", y="Hip Size")
 ```
+By using geom_jitter, we can avoid the overlapping of points in the plots. 
+
+```{r}
+ggplot(diabetes_clean,aes(x=waist,y=hip, color=frame)) + geom_jitter() + geom_smooth(method = "lm", se = FALSE) + labs(title="Waist and Hip Size by Frame", x="Waist Size", y="Hip Size")
+```
+By condensing the graph into one single graph instead, we can more easily compare trends across frames.
 
 ##Messy Data
 
@@ -139,7 +153,6 @@ Spread takes two columns and puts them into many columns, each column for every 
 
 ##Regression Models
 
-***
 ####15. Linear Regression Model
 ```{r}
 fit <- lm(glyhb_star ~stab.glu + age + waist + ratio+ factor(frame),data=diabetes_clean)
@@ -148,24 +161,34 @@ summary(fit)
 
 Based on the F-statistic, the p-value is <2.2e-16, which indicates the model is overall statistically significant. On the other hand, the adjusted $R^2$ is 0.557, meaning only 55.7% of the variation in 'glyhb_star' can be explained by the model. Based on our exploratory analysis, the variables all show a linear relationship with 'glyhb_star', indicating a multiple linear regression model is likely a good choice to start with.  
 
-***
 ####16. Interpretations
 
-*stab.glu: 
+*stab.glu: The estimated change in the average log value of glycosolated hemoglobin when stabalized glucose increases by one unit is 0.0035, while holding age, waist, ratio, and frame constant.
+*age: The estimated change in the average log value of glycosolated hemoglobin when age increases by one year is 0.0034, while holding stabalized glucose, waist, ratio, and frame constant. 
+*waist: The estimated change in the average log value of glycosolated hemoglobin when waist increases by one inch is 0.0048, while holding stabalized glucose, age, ratio, and frame constant. 
+*ratio: The estimated change in the average log value of glycosolated hemoglobin when the ratio of cholesterol to HDL increases by one unit is 0.0219, while holding stabalized glucose, age, waist, and frame constant.
+*frame: The estimated change in the average log value of glycosolated hemoglobin when the person has a medium frame is 0.0219 units higher than when the person has a large frame. The estimated change in the average log value of glycosolated hemoglobin when the person has a small frame is 0.0132 units higher than when the person has a large frame.
 
-***
 ####17. Fitted Values
 ```{r}
-fit$fitted.values
+head(fit$fitted.values)
 ```
+These estimated fitted values are an estimate of our dependent variable 'glyhb_star' or glycosolated hemoglobin. 
 
-These estimated fitted values are estimated of our dependent variable 'glyhb_star' or glycosolated hemoglobin. 
+```{r}
+x <- data.frame(stab.glu=90, age=35, waist=30, ratio=5.1, frame="small")
+pred <- predict(fit,x)
+exp(pred)
+```
+We predict a person who is 35 years old with a stabalized glucose of 90, waist size of 30, ratio of choleterol to HDl of 5.1, and a small frame to have a glycosolated hemoglobin of 4.6472 (or glyhb_star=1.5326).
 
 ***
 ####18. Inference vs. Prediction
+In
 
 ***
 ####19. Linear Regression vs. K-NN Regression Models
+
 
 ##Reflection
 
